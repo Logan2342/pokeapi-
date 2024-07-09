@@ -27,7 +27,21 @@ export default function Home() {
                 </button>
             </div>
             <div className="flex flex-row justify-between w-full border-2 border-blue-500 gap-4">
-
+                {/* First div with an image and a description */}
+                <div className="flex flex-col items-center border-2 border-gray-300 p-4 rounded-lg">
+                    <Image
+                        src="/profile.png" // Replace with your image path
+                        width={150}
+                        height={150}
+                        alt="Profile Picture"
+                        className="rounded-full"
+                    />
+                    <p className="mt-4 text-center">This is a profile picture with  description.</p>
+                </div>
+                {/* Second div with just a description */}
+                <div className="flex flex-col items-center border-2 border-gray-300 p-4 rounded-lg">
+                    <p className="text-center">This is a description without an image.</p>
+                </div>
             </div>
         </main>
     );
