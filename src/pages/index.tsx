@@ -1,12 +1,34 @@
-import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchPokemon, getPokemon } from "@/api/getPokemon";
+import LoadPokemon from "@/components/LoadPokemon";
+import Pokemon from "@/interfaces/pokemon";
 
 export default function Home() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
 
-    const handleSearch = () => {
-        console.log('Search query:', searchQuery);
-        // Implement your search logic here
+    useEffect(() => {
+        const fetchPokemonData = async () => {
+            try {
+                const response = await fetchPokemon({ search: searchQuery });
+                console.log(`Response from pokemon API: ${JSON.stringify(response, null, 2)}`);
+                setPokemonList(response); // Assuming the API returns an array of Pokemon
+            } catch (error) {
+                console.error('Failed to fetch Pokemon:', error);
+            }
+        };
+
+        fetchPokemonData();
+    }, [searchQuery]);
+
+    const handleSearch = async () => {
+        try {
+            const response = await getPokemon({ query: searchQuery, limit: 100, page: 1 });
+            console.log(`Search response from pokemon API: ${JSON.stringify(response, null, 2)}`);
+            setPokemonList(response); // Assuming the API returns an array of Pokemon
+        } catch (error) {
+            console.error('Failed to fetch Pokemon:', error);
+        }
     };
 
     return (
@@ -26,22 +48,8 @@ export default function Home() {
                     Search
                 </button>
             </div>
-            <div className="flex flex-row justify-between w-full border-2 border-blue-500 gap-4">
-                {/* First div with an image and a description */}
-                <div className="flex flex-col items-center border-2 border-gray-300 p-4 rounded-lg">
-                    <Image
-                        src="/profile.png" // Replace with your image path
-                        width={150}
-                        height={150}
-                        alt="Profile Picture"
-                        className="rounded-full"
-                    />
-                    <p className="mt-4 text-center">This is a profile picture with  description.</p>
-                </div>
-                {/* Second div with just a description */}
-                <div className="flex flex-col items-center border-2 border-gray-300 p-4 rounded-lg">
-                    <p className="text-center">This is a description without an image.</p>
-                </div>
+            <div className="flex m-6 flex-row w-full border-2 border-blue-500 gap-4">
+                <LoadPokemon search={searchQuery} initialPokemon={pokemonList} />
             </div>
         </main>
     );
